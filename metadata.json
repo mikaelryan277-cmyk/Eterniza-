@@ -1,0 +1,6 @@
+{
+  "name": "Eterniza - Seu Reencontro",
+  "description": "Transforme duas fotos em um abraço eterno com quem você ama.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

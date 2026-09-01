@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply antialiased text-[#2D2A26] bg-[#FDFCF8];
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Prevent CLS for common elements */
+  img {
+    content-visibility: auto;
+  }
+}
+
+@layer utilities {
+  .touch-callout-none {
+    -webkit-touch-callout: none;
+  }
+}
