@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { QuizState, PersonType, ScenarioType } from './types';
+import { QuizState } from './types';
 import { 
   StepHook, 
   StepPerson, 
@@ -8,7 +8,6 @@ import {
   StepUserPhoto, 
   StepLovedOnePhoto, 
   StepProcessing, 
-  StepPreview, 
   StepOffer 
 } from './components/StepScreens';
 import { ProgressBar } from './components/ProgressBar';
@@ -32,17 +31,17 @@ export default function App() {
     if (state.step === 1) {
       trackEvent('quiz_started');
     }
-  }, []);
+  }, [state.step]);
 
   const nextStep = () => {
     setState(prev => ({ ...prev, step: prev.step + 1 }));
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const prevStep = () => {
     if (state.step > 1) {
       setState(prev => ({ ...prev, step: prev.step - 1 }));
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -57,7 +56,7 @@ export default function App() {
       case 2:
         return (
           <StepPerson 
-            onNext={(person) => {
+            onNext={(person: any) => {
               updateState({ personType: person });
               trackEvent('person_selected', { person });
               nextStep();
@@ -68,7 +67,7 @@ export default function App() {
       case 3:
         return (
           <StepScenario 
-            onNext={(scenario) => {
+            onNext={(scenario: any) => {
               updateState({ scenario: scenario });
               trackEvent('scenario_selected', { scenario });
               nextStep();
@@ -80,7 +79,7 @@ export default function App() {
       case 4:
         return (
           <StepUserPhoto 
-            onNext={(photo) => {
+            onNext={(photo: any) => {
               updateState({ userPhoto: photo });
               trackEvent('photo_1_uploaded');
               nextStep();
@@ -92,7 +91,7 @@ export default function App() {
       case 5:
         return (
           <StepLovedOnePhoto 
-            onNext={(photo) => {
+            onNext={(photo: any) => {
               updateState({ lovedOnePhoto: photo });
               trackEvent('photo_2_uploaded');
               nextStep();
@@ -108,23 +107,12 @@ export default function App() {
             userPhoto={state.userPhoto}
             lovedOnePhoto={state.lovedOnePhoto}
             onComplete={() => {
-              trackEvent('processing_completed');
+              trackEvent('preparation_completed');
               nextStep();
             }} 
           />
         );
       case 7:
-        return (
-          <StepPreview 
-            state={state}
-            onNext={() => {
-              trackEvent('preview_viewed');
-              nextStep();
-            }} 
-            onBack={prevStep}
-          />
-        );
-      case 8:
         return <StepOffer state={state} trackEvent={trackEvent} />;
       default:
         return <StepHook onNext={nextStep} trackEvent={trackEvent} />;
@@ -134,18 +122,18 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-[#2D2A26] font-sans flex flex-col overflow-x-hidden selection:bg-[#C5A059]/30">
       
-      {state.step > 1 && state.step < 8 && (
-        <ProgressBar currentStep={state.step} totalSteps={7} />
+      {state.step > 1 && (
+        <ProgressBar currentStep={state.step} />
       )}
 
-      <main className="flex-1 max-w-md mx-auto px-6 pb-12 w-full">
+      <main className="flex-1 max-w-md mx-auto px-5 pb-12 w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={state.step}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
           >
             {renderStep()}
           </motion.div>
@@ -154,3 +142,4 @@ export default function App() {
     </div>
   );
 }
+

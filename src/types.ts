@@ -39,10 +39,10 @@ export const SCENARIOS = [
 ];
 
 export const PERSON_OPTIONS = [
-  { id: 'mãe', label: 'Minha mãe', emoji: '👩' },
-  { id: 'pai', label: 'Meu pai', emoji: '👨' },
-  { id: 'avó', label: 'Minha avó', emoji: '👵' },
-  { id: 'avô', label: 'Meu avô', emoji: '👴' },
-  { id: 'parceiro', label: 'Meu parceiro(a)', emoji: '💑' },
-  { id: 'outro', label: 'Outra pessoa especial', emoji: '🤍' }
+  { id: 'mãe', label: 'Mãe', emoji: '👩' },
+  { id: 'pai', label: 'Pai', emoji: '👨' },
+  { id: 'avó', label: 'Avó', emoji: '👵' },
+  { id: 'avô', label: 'Avô', emoji: '👴' },
+  { id: 'parceiro', label: 'Parceiro(a)', emoji: '💑' },
+  { id: 'outro', label: 'Outra pessoa', emoji: '🤍' }
 ];
