@@ -141,13 +141,13 @@ const VideoCard = ({
     <motion.div 
       onClick={onClick}
       whileTap={{ scale: 0.97 }}
-      className={`relative rounded-[28px] overflow-hidden border-2 transition-all duration-300 flex flex-col group ${
+      className={`relative rounded-[20px] overflow-hidden border-2 transition-all duration-300 flex flex-col group ${
         selected 
           ? 'border-[#C5A059] bg-[#C5A059]/5 shadow-md ring-2 ring-[#C5A059]/20' 
           : 'border-[#E5E1D8] bg-white hover:border-[#C5A059]/40'
       }`}
     >
-      <div className="relative aspect-[16/10] w-full bg-[#F3F4F6] overflow-hidden">
+      <div className="relative aspect-[3/4] w-full bg-[#F3F4F6] overflow-hidden">
         {isPlaying ? (
           <iframe
             src={`https://www.youtube.com/embed/${scenario.videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=${scenario.videoId}&iv_load_policy=3`}
@@ -163,7 +163,7 @@ const VideoCard = ({
               alt={scenario.name}
               loading="lazy"
               width="400"
-              height="250"
+              height="533"
               decoding="async"
               className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
             />
@@ -175,33 +175,26 @@ const VideoCard = ({
                 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 text-white shadow-xl"
+                className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 text-white shadow-xl"
               >
-                <Play fill="white" size={20} className="ml-1" />
+                <Play fill="white" size={16} className="ml-0.5" />
               </motion.button>
             </div>
           </div>
         )}
-      </div>
-
-      <div className="p-4 flex items-center justify-between">
-        <div className="flex flex-col gap-0.5">
-          <h3 className={`font-bold text-[15px] tracking-tight ${selected ? 'text-[#1F2937]' : 'text-[#374151]'}`}>
-            {scenario.name}
-          </h3>
-          {selected && (
-            <span className="text-[9px] font-bold text-[#C5A059] uppercase tracking-widest flex items-center gap-1">
-               <Check size={10} strokeWidth={3} /> SELECIONADO
-            </span>
-          )}
-        </div>
         
-        <div className={`px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all border ${
-          selected 
-            ? 'bg-[#C5A059] text-white border-[#C5A059]' 
-            : 'bg-[#FDFCF8] text-[#5F6672] border-[#E5E1D8] group-hover:border-[#C5A059]/40'
-        }`}>
-          {selected ? 'ESCOLHIDO' : 'ESCOLHER'}
+        {/* Scenario name overlay for 2x2 grid style */}
+        <div className="absolute bottom-0 left-0 w-full p-2.5 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none">
+          <div className="flex flex-col gap-0.5">
+            <h3 className="font-bold text-[12px] tracking-tight text-white leading-tight">
+              {scenario.name}
+            </h3>
+            {selected && (
+              <span className="text-[8px] font-extrabold text-[#C5A059] uppercase tracking-wider flex items-center gap-1">
+                 <Check size={8} strokeWidth={4} /> SELECIONADO
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
@@ -250,7 +243,7 @@ const Carousel = ({ images }: { images: string[] }) => {
             onDragEnd={handleDragEnd}
             className="absolute inset-0 w-full h-full object-cover cursor-grab active:cursor-grabbing"
             loading={index === 0 ? "eager" : "lazy"}
-            {...(index === 0 ? { fetchpriority: "high" } : {})}
+            {...(index === 0 ? { fetchPriority: "high" } : {})}
             width="320"
             height="400"
             decoding="async"
@@ -383,7 +376,7 @@ export const StepScenario = ({ onNext, selected, onBack }: any) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-5 w-full">
+      <div className="grid grid-cols-2 gap-2.5 w-full">
         {SCENARIOS.map((s) => (
           <VideoCard 
             key={s.id}
@@ -766,22 +759,30 @@ export const StepOffer = ({ state, trackEvent }: any) => {
         </div>
 
         <div className="flex flex-col gap-5">
-          <div className="rounded-[28px] overflow-hidden border border-[#E5E1D8] shadow-sm bg-white">
+          <div className="rounded-[28px] overflow-hidden border border-[#E5E1D8] shadow-sm bg-white min-h-[100px]">
             <img 
-              src="https://i.imgur.com/4TwovKO.jpeg" 
+              src="https://i.imgur.com/nfxMrrM.png" 
               alt="Avaliação Real 1" 
               className="w-full h-auto block"
-              loading="lazy"
-              decoding="async"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.src.endsWith('.jpeg')) {
+                  target.src = 'https://i.imgur.com/nfxMrrM.jpeg';
+                }
+              }}
             />
           </div>
-          <div className="rounded-[28px] overflow-hidden border border-[#E5E1D8] shadow-sm bg-white">
+          <div className="rounded-[28px] overflow-hidden border border-[#E5E1D8] shadow-sm bg-white min-h-[100px]">
             <img 
-              src="https://i.imgur.com/Qj2WYKH.jpeg" 
+              src="https://i.imgur.com/A5LjhhH.png" 
               alt="Avaliação Real 2" 
               className="w-full h-auto block"
-              loading="lazy"
-              decoding="async"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.src.endsWith('.jpeg')) {
+                  target.src = 'https://i.imgur.com/A5LjhhH.jpeg';
+                }
+              }}
             />
           </div>
         </div>

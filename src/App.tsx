@@ -51,8 +51,10 @@ export default function App() {
     } else if (state.step === 4 || state.step === 5) {
       // Prefetch offer reviews when near the end
       prefetchImages([
-        'https://i.imgur.com/4TwovKO.jpeg',
-        'https://i.imgur.com/Qj2WYKH.jpeg'
+        'https://i.imgur.com/nfxMrrM.png',
+        'https://i.imgur.com/nfxMrrM.jpeg',
+        'https://i.imgur.com/A5LjhhH.png',
+        'https://i.imgur.com/A5LjhhH.jpeg'
       ]);
     }
   }, [state.step]);
