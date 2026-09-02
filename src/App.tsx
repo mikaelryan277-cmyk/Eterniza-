@@ -31,17 +31,41 @@ export default function App() {
     if (state.step === 1) {
       trackEvent('quiz_started');
     }
+
+    // Smart Prefetching
+    const prefetchImages = (urls: string[]) => {
+      urls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+    };
+
+    if (state.step === 1) {
+      // Prefetch common scenario thumbnails after first fold is stable
+      setTimeout(() => {
+        prefetchImages([
+          'https://img.youtube.com/vi/H0nv_KUhidg/maxresdefault.jpg',
+          'https://img.youtube.com/vi/pL4mdyu4_9E/maxresdefault.jpg'
+        ]);
+      }, 2000);
+    } else if (state.step === 4 || state.step === 5) {
+      // Prefetch offer reviews when near the end
+      prefetchImages([
+        'https://i.imgur.com/4TwovKO.jpeg',
+        'https://i.imgur.com/Qj2WYKH.jpeg'
+      ]);
+    }
   }, [state.step]);
 
   const nextStep = () => {
     setState(prev => ({ ...prev, step: prev.step + 1 }));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'auto' }); // Faster than smooth for performance feel
   };
 
   const prevStep = () => {
     if (state.step > 1) {
       setState(prev => ({ ...prev, step: prev.step - 1 }));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   };
 
@@ -130,10 +154,10 @@ export default function App() {
         <AnimatePresence mode="wait">
           <motion.div
             key={state.step}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: 'easeOut' }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
           >
             {renderStep()}
           </motion.div>

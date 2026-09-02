@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, useReducedMotion, AnimatePresence } from 'motion/react';
 import { 
   Play, 
   ChevronRight, 
@@ -121,9 +121,180 @@ const Card = ({ children, onClick, selected, className = '', emoji }: CardProps)
   );
 };
 
+// --- HELPER COMPONENTS ---
+
+const VideoCard = ({ 
+  scenario, 
+  selected, 
+  onClick, 
+  isPlaying, 
+  onPlay 
+}: { 
+  scenario: any, 
+  selected: boolean, 
+  onClick: () => void, 
+  isPlaying: boolean,
+  onPlay: () => void,
+  key?: any
+}) => {
+  return (
+    <motion.div 
+      onClick={onClick}
+      whileTap={{ scale: 0.97 }}
+      className={`relative rounded-[28px] overflow-hidden border-2 transition-all duration-300 flex flex-col group ${
+        selected 
+          ? 'border-[#C5A059] bg-[#C5A059]/5 shadow-md ring-2 ring-[#C5A059]/20' 
+          : 'border-[#E5E1D8] bg-white hover:border-[#C5A059]/40'
+      }`}
+    >
+      <div className="relative aspect-[16/10] w-full bg-[#F3F4F6] overflow-hidden">
+        {isPlaying ? (
+          <iframe
+            src={`https://www.youtube.com/embed/${scenario.videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=${scenario.videoId}&iv_load_policy=3`}
+            title={scenario.name}
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            allow="autoplay; encrypted-media"
+            loading="eager"
+          />
+        ) : (
+          <div className="relative w-full h-full">
+            <img 
+              src={scenario.image} 
+              alt={scenario.name}
+              loading="lazy"
+              width="400"
+              height="250"
+              decoding="async"
+              className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
+              <motion.button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPlay();
+                }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 text-white shadow-xl"
+              >
+                <Play fill="white" size={20} className="ml-1" />
+              </motion.button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="p-4 flex items-center justify-between">
+        <div className="flex flex-col gap-0.5">
+          <h3 className={`font-bold text-[15px] tracking-tight ${selected ? 'text-[#1F2937]' : 'text-[#374151]'}`}>
+            {scenario.name}
+          </h3>
+          {selected && (
+            <span className="text-[9px] font-bold text-[#C5A059] uppercase tracking-widest flex items-center gap-1">
+               <Check size={10} strokeWidth={3} /> SELECIONADO
+            </span>
+          )}
+        </div>
+        
+        <div className={`px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest transition-all border ${
+          selected 
+            ? 'bg-[#C5A059] text-white border-[#C5A059]' 
+            : 'bg-[#FDFCF8] text-[#5F6672] border-[#E5E1D8] group-hover:border-[#C5A059]/40'
+        }`}>
+          {selected ? 'ESCOLHIDO' : 'ESCOLHER'}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const Carousel = ({ images }: { images: string[] }) => {
+  const [index, setIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (isPaused || shouldReduceMotion) return;
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 3200);
+    return () => clearInterval(timer);
+  }, [isPaused, images.length, shouldReduceMotion]);
+
+  const handleDragEnd = (_: any, info: any) => {
+    if (info.offset.x > 50) {
+      setIndex((prev) => (prev - 1 + images.length) % images.length);
+    } else if (info.offset.x < -50) {
+      setIndex((prev) => (prev + 1) % images.length);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-5 w-full">
+      <div 
+        className="relative aspect-[4/5] w-full max-w-[320px] mx-auto bg-[#F3F4F6] rounded-[36px] overflow-hidden shadow-2xl border-[6px] border-[#2D2A26] touch-pan-y"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onTouchStart={() => setIsPaused(true)}
+      >
+        <AnimatePresence initial={false} mode="wait">
+          <motion.img
+            key={index}
+            src={images[index]}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            onDragEnd={handleDragEnd}
+            className="absolute inset-0 w-full h-full object-cover cursor-grab active:cursor-grabbing"
+            loading={index === 0 ? "eager" : "lazy"}
+            {...(index === 0 ? { fetchpriority: "high" } : {})}
+            width="320"
+            height="400"
+            decoding="async"
+          />
+        </AnimatePresence>
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10 pointer-events-none" />
+        
+        <div className="absolute bottom-6 left-0 w-full px-6 z-20 pointer-events-none">
+          <p className="text-white font-serif italic text-base mb-1 leading-tight">'Parece que ele está aqui novamente...'</p>
+          <div className="flex items-center justify-center gap-1.5 opacity-80">
+            <Star className="text-[#C5A059]" fill="currentColor" size={10} />
+            <span className="text-white text-[9px] uppercase tracking-widest font-bold">Avaliação 4.9/5 • 12k+ Homenagens</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Indicators */}
+      <div className="flex justify-center gap-2">
+        {images.map((_, i) => (
+          <motion.div 
+            key={i} 
+            animate={{ 
+              width: i === index ? 16 : 6,
+              backgroundColor: i === index ? "#C5A059" : "#E5E1D8"
+            }}
+            className="h-1.5 rounded-full"
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // --- SCREENS ---
 
 export const StepHook = ({ onNext }: any) => {
+  const showcaseImages = [
+    "https://i.imgur.com/zoOFEKI.jpeg",
+    "https://i.imgur.com/VCm0F9l.jpeg",
+    "https://i.imgur.com/hlH3Ekl.jpeg",
+    "https://i.imgur.com/nvYZDVv.jpeg"
+  ];
+
   return (
     <div className="flex flex-col gap-8 text-center pt-2 pb-6 max-w-md mx-auto w-full">
       <div className="flex flex-col gap-4">
@@ -136,31 +307,7 @@ export const StepHook = ({ onNext }: any) => {
         </p>
       </div>
 
-      <div className="relative aspect-[4/5] w-full max-w-[320px] mx-auto bg-[#1A1A1A] rounded-[36px] overflow-hidden shadow-2xl border-[6px] border-[#2D2A26]">
-        <img 
-          src="https://images.unsplash.com/photo-1516589174184-c685bc016733?auto=format&fit=crop&q=80&w=800" 
-          alt="Exemplo do Reencontro"
-          loading="eager"
-          className="w-full h-full object-cover opacity-80"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
-        <div className="absolute inset-0 flex items-center justify-center z-20">
-          <motion.div 
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 cursor-pointer"
-          >
-            <Play className="text-white ml-1" fill="white" size={24} />
-          </motion.div>
-        </div>
-        <div className="absolute bottom-6 left-0 w-full px-6 z-20">
-          <p className="text-white font-serif italic text-base mb-1 leading-tight">'Parece que ele está aqui novamente...'</p>
-          <div className="flex items-center justify-center gap-1.5 opacity-70">
-            <Star className="text-[#C5A059]" fill="currentColor" size={10} />
-            <span className="text-white text-[9px] uppercase tracking-widest font-bold">Avaliação 4.9/5 • 12k+ Homenagens</span>
-          </div>
-        </div>
-      </div>
+      <Carousel images={showcaseImages} />
 
       <div className="flex flex-col gap-3 mt-1">
         <Button onClick={onNext} icon={ChevronRight} pulse={true}>
@@ -212,12 +359,12 @@ export const StepPerson = ({ onNext, selected }: any) => {
 
 export const StepScenario = ({ onNext, selected, onBack }: any) => {
   const [selectedId, setSelectedId] = useState<string | null>(selected);
+  const [playingId, setPlayingId] = useState<string | null>(null);
 
-  const handleSelect = (id: string) => {
-    setSelectedId(id);
-    setTimeout(() => {
-      onNext(id);
-    }, 280);
+  const handleAdvance = () => {
+    if (selectedId) {
+      onNext(selectedId);
+    }
   };
 
   return (
@@ -232,45 +379,36 @@ export const StepScenario = ({ onNext, selected, onBack }: any) => {
           <h2 className="text-[26px] sm:text-3xl font-serif leading-tight text-[#1F2937]">
             Escolha o cenário
           </h2>
+          <p className="text-xs text-[#5F6672] font-medium">Qual combina mais com esse reencontro?</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-3.5 w-full">
+      <div className="flex flex-col gap-5 w-full">
         {SCENARIOS.map((s) => (
-          <Card 
-            key={s.id} 
+          <VideoCard 
+            key={s.id}
+            scenario={s}
             selected={selectedId === s.id}
-            className="p-0 overflow-hidden flex-col items-stretch text-left"
-            onClick={() => handleSelect(s.id)}
-          >
-            <div className="relative h-36 w-full overflow-hidden">
-              <img 
-                src={s.image} 
-                alt={s.name} 
-                loading="lazy"
-                className="w-full h-full object-cover grayscale-[0.15] hover:scale-105 transition-transform duration-500" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-4 right-4 text-white">
-                <h3 className="font-bold text-base leading-tight drop-shadow">{s.name}</h3>
-              </div>
-            </div>
-            <div className="p-3.5 bg-white flex items-center justify-between">
-              <p className="text-xs text-[#5F6672] font-medium leading-tight">{s.description}</p>
-              {selectedId === s.id && (
-                <span className="text-[10px] font-bold text-[#C5A059] uppercase tracking-wider shrink-0 ml-2">
-                  Selecionado ✓
-                </span>
-              )}
-            </div>
-          </Card>
+            isPlaying={playingId === s.id}
+            onPlay={() => setPlayingId(s.id)}
+            onClick={() => {
+              setSelectedId(s.id);
+              if (playingId !== s.id) setPlayingId(s.id);
+            }}
+          />
         ))}
       </div>
 
       {selectedId && (
-        <Button onClick={() => onNext(selectedId)} icon={ChevronRight}>
-          USAR ESTE CENÁRIO
-        </Button>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-2"
+        >
+          <Button onClick={handleAdvance} icon={ChevronRight} pulse={true}>
+            USAR ESTE CENÁRIO
+          </Button>
+        </motion.div>
       )}
     </div>
   );
@@ -618,30 +756,34 @@ export const StepOffer = ({ state, trackEvent }: any) => {
       </div>
 
       {/* Testimonials */}
-      <div className="space-y-6 pt-6 border-t border-[#E5E1D8]">
-        <div className="text-center flex flex-col gap-1.5">
-          <span className="text-[#C5A059] uppercase tracking-[0.2em] text-[10px] font-bold">Depoimentos</span>
-          <h3 className="text-xl font-serif font-bold text-[#1F2937]">
-            O que outras <span className="italic text-[#C5A059]">famílias dizem:</span>
+      <div className="space-y-8 pt-8 border-t border-[#E5E1D8]">
+        <div className="text-center flex flex-col gap-2">
+          <span className="text-[#C5A059] uppercase tracking-[0.2em] text-[10px] font-bold">Prova Social</span>
+          <h3 className="text-2xl font-serif font-bold text-[#1F2937]">
+            Famílias que já viveram <span className="italic text-[#C5A059]">esse reencontro</span>
           </h3>
+          <p className="text-[11px] text-[#5F6672] font-bold uppercase tracking-wider">Avaliações reais de quem já criou o próprio reencontro.</p>
         </div>
-        
-        <div className="space-y-4">
-          {[
-            { name: "Maria Helena", text: "Não tenho palavras para descrever a emoção. Parecia que eu estava lá de novo. Muito obrigada por esse presente." },
-            { name: "Ricardo S.", text: "A qualidade superou minhas expectativas. Enviei para toda a família e todos se emocionaram muito." }
-          ].map((testimonial, i) => (
-            <div key={i} className="p-6 rounded-[24px] bg-white border border-[#E5E1D8] shadow-sm flex flex-col gap-3">
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map(n => <Star key={n} size={10} className="text-[#C5A059]" fill="currentColor" />)}
-              </div>
-              <p className="text-[#374151] font-medium leading-relaxed italic text-xs">"{testimonial.text}"</p>
-              <div className="flex items-center gap-2.5">
-                <div className="w-5 h-[1px] bg-[#C5A059]" />
-                <p className="text-[10px] font-bold text-[#1F2937] uppercase tracking-widest">{testimonial.name}</p>
-              </div>
-            </div>
-          ))}
+
+        <div className="flex flex-col gap-5">
+          <div className="rounded-[28px] overflow-hidden border border-[#E5E1D8] shadow-sm bg-white">
+            <img 
+              src="https://i.imgur.com/4TwovKO.jpeg" 
+              alt="Avaliação Real 1" 
+              className="w-full h-auto block"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div className="rounded-[28px] overflow-hidden border border-[#E5E1D8] shadow-sm bg-white">
+            <img 
+              src="https://i.imgur.com/Qj2WYKH.jpeg" 
+              alt="Avaliação Real 2" 
+              className="w-full h-auto block"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
         </div>
       </div>
 
