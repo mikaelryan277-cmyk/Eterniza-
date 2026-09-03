@@ -150,11 +150,12 @@ const VideoCard = ({
       <div className="relative aspect-[3/4] w-full bg-[#F3F4F6] overflow-hidden">
         {isPlaying ? (
           <iframe
-            src={`https://www.youtube.com/embed/${scenario.videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=${scenario.videoId}&iv_load_policy=3`}
+            src={`https://fast.wistia.net/embed/iframe/${scenario.videoId}?videoFoam=true&autoPlay=true&muted=true&playerColor=C5A059`}
             title={scenario.name}
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            allow="autoplay; encrypted-media"
+            className="absolute inset-0 w-full h-full"
+            allow="autoplay; fullscreen"
             loading="eager"
+            frameBorder="0"
           />
         ) : (
           <div className="relative w-full h-full">
@@ -713,7 +714,7 @@ export const StepOffer = ({ state, trackEvent }: any) => {
         <div className="text-center flex flex-col gap-1.5 mb-7">
           <span className="text-[10px] uppercase tracking-widest font-bold opacity-85">Valor especial:</span>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-5xl font-serif font-bold">R$ 27,94</span>
+            <span className="text-5xl font-serif font-bold">R$ 27,90</span>
           </div>
           <span className="text-[10px] uppercase tracking-widest font-bold opacity-85">Pagamento único</span>
         </div>

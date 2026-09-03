@@ -14,30 +14,30 @@ export interface QuizState {
 export const SCENARIOS = [
   {
     id: 'escadaria',
-    name: '✨ Escadaria dourada',
-    image: 'https://img.youtube.com/vi/H0nv_KUhidg/maxresdefault.jpg',
-    videoId: 'H0nv_KUhidg',
+    name: '✨ Escadaria com nuvens',
+    image: 'https://fast.wistia.net/embed/medias/312cyl09txuzd6j.jpg',
+    videoId: '312cyl09txuzd6j',
     description: 'Um encontro em direção à luz.'
-  },
-  {
-    id: 'nuvens',
-    name: '☁️ Nuvens',
-    image: 'https://img.youtube.com/vi/pL4mdyu4_9E/maxresdefault.jpg',
-    videoId: 'pL4mdyu4_9E',
-    description: 'O abraço em um céu infinito.'
   },
   {
     id: 'jesus',
     name: '🙏 Com Jesus',
-    image: 'https://img.youtube.com/vi/6VSRYPsqM3M/maxresdefault.jpg',
-    videoId: '6VSRYPsqM3M',
+    image: 'https://fast.wistia.net/embed/medias/mdfw4ww2fia4w84.jpg',
+    videoId: 'mdfw4ww2fia4w84',
     description: 'Um reencontro abençoado e divino.'
   },
   {
+    id: 'nuvens',
+    name: '☁️ Nas nuvens',
+    image: 'https://fast.wistia.net/embed/medias/afa7j9ebsj8vika.jpg',
+    videoId: 'afa7j9ebsj8vika',
+    description: 'O abraço em um céu infinito.'
+  },
+  {
     id: 'praia',
-    name: '🏖️ Praia',
-    image: 'https://img.youtube.com/vi/Zg4WzHI5qtQ/maxresdefault.jpg',
-    videoId: 'Zg4WzHI5qtQ',
+    name: '🏖️ Na praia',
+    image: 'https://fast.wistia.net/embed/medias/6idfx5cca7lahgo.jpg',
+    videoId: '6idfx5cca7lahgo',
     description: 'A paz do mar e do reencontro.'
   }
 ];
