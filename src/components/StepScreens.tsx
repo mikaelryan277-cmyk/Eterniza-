@@ -287,7 +287,7 @@ const ScenarioThumbnail = ({ scenario, active, onClick }: ScenarioThumbnailProps
     <motion.div
       onClick={onClick}
       whileTap={{ scale: 0.95 }}
-      className="flex flex-col gap-2 cursor-pointer group shrink-0 w-[110px] sm:w-[130px]"
+      className="flex flex-col gap-2 cursor-pointer group flex-none w-[120px] sm:w-[140px]"
     >
       <div className={`relative aspect-[3/4] rounded-2xl overflow-hidden border-2 transition-all duration-300 shadow-sm ${
         active ? 'border-[#C5A059] ring-2 ring-[#C5A059]/20' : 'border-[#E5E1D8] group-hover:border-[#C5A059]/40'
@@ -306,7 +306,7 @@ const ScenarioThumbnail = ({ scenario, active, onClick }: ScenarioThumbnailProps
         )}
         
         {/* Play Icon Overlay */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-colors duration-300 ${
+        <div className={`absolute inset-0 flex items-center justify-center transition-colors duration-300 z-10 ${
           active ? 'bg-black/5' : 'bg-black/10 group-hover:bg-black/20'
         }`}>
           <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg border transition-all ${
@@ -334,7 +334,7 @@ export const StepScenario = ({ onNext, selected, onBack }: any) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 pt-2 pb-6 max-w-md mx-auto w-full overflow-x-hidden">
+    <div className="flex flex-col gap-6 pt-2 pb-6 max-w-md mx-auto w-full relative">
       <div className="flex flex-col gap-4 px-1">
         <button onClick={onBack} className="flex items-center gap-1.5 text-[#5F6672] text-[10px] font-bold uppercase tracking-widest hover:text-[#1F2937] transition-colors active:opacity-100 self-start">
           <ArrowLeft size={14} /> Voltar
@@ -387,14 +387,14 @@ export const StepScenario = ({ onNext, selected, onBack }: any) => {
         </motion.div>
 
         {/* Thumbnails Carousel */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 relative z-20">
           <div className="flex items-center justify-between px-1">
             <span className="text-[10px] font-bold text-[#C5A059] uppercase tracking-widest">Outras opções</span>
             <span className="text-[9px] font-medium text-[#5F6672] flex items-center gap-1">
               Deslize para ver mais <ArrowLeft size={10} className="rotate-180" />
             </span>
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-4 px-1 no-scrollbar -mx-5 px-5 scroll-smooth">
+          <div className="flex gap-4 overflow-x-auto overflow-y-visible pb-4 px-5 scroll-smooth -mx-5 list-none">
             {SCENARIOS.map((s) => (
               <ScenarioThumbnail
                 key={s.id}
