@@ -123,86 +123,6 @@ const Card = ({ children, onClick, selected, className = '', emoji }: CardProps)
 
 // --- HELPER COMPONENTS ---
 
-const VideoCard = ({ 
-  scenario, 
-  selected, 
-  onClick, 
-  isPlaying, 
-  onPlay 
-}: { 
-  scenario: any, 
-  selected: boolean, 
-  onClick: () => void, 
-  isPlaying: boolean,
-  onPlay: () => void,
-  key?: any
-}) => {
-  return (
-    <motion.div 
-      onClick={onClick}
-      whileTap={{ scale: 0.97 }}
-      className={`relative rounded-[24px] overflow-hidden border-2 transition-all duration-300 flex flex-col group ${
-        selected 
-          ? 'border-[#C5A059] bg-[#C5A059]/5 shadow-lg ring-2 ring-[#C5A059]/20' 
-          : 'border-[#E5E1D8] bg-white hover:border-[#C5A059]/40'
-      }`}
-    >
-      <div className="relative aspect-[3/4] w-full bg-[#F3F4F6] overflow-hidden">
-        {isPlaying ? (
-          <iframe
-            src={`https://fast.wistia.net/embed/iframe/${scenario.videoId}?videoFoam=true&autoPlay=true&muted=true&playerColor=C5A059&controlsVisibleOnLoad=false&playbar=false&settingsControl=false&smallPlayButton=false&contextMenu=false`}
-            title={scenario.name}
-            className="absolute inset-0 w-full h-full"
-            allow="autoplay; fullscreen"
-            loading="eager"
-            frameBorder="0"
-          />
-        ) : (
-          <div className="relative w-full h-full cursor-pointer group/card" onClick={(e) => { e.stopPropagation(); onPlay(); }}>
-            <img 
-              src={scenario.image} 
-              alt={scenario.name}
-              loading="eager"
-              width="400"
-              height="533"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
-            />
-            {/* Premium Play Button Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover/card:bg-black/20 transition-colors duration-300">
-              <motion.div
-                whileHover={{ scale: 1.15 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl border border-white/40 text-[#1F2937] transform transition-transform duration-300"
-              >
-                <div className="bg-[#1F2937] rounded-full w-10 h-10 flex items-center justify-center">
-                  <Play fill="white" size={16} className="ml-1 text-white" />
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        )}
-        
-        {/* Scenario name overlay with sophisticated gradient */}
-        <div className="absolute bottom-0 left-0 w-full p-3.5 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none">
-          <div className="flex flex-col gap-0.5">
-            <h3 className="font-bold text-[13px] tracking-tight text-white leading-tight">
-              {scenario.name}
-            </h3>
-            {selected && (
-              <motion.span 
-                initial={{ opacity: 0, x: -5 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-[9px] font-extrabold text-[#C5A059] uppercase tracking-wider flex items-center gap-1"
-              >
-                 <Check size={9} strokeWidth={4} /> SELECIONADO
-              </motion.span>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 
 const Carousel = ({ images }: { images: string[] }) => {
   const [index, setIndex] = useState(0);
@@ -353,19 +273,69 @@ export const StepPerson = ({ onNext, selected }: any) => {
   );
 };
 
+interface ScenarioThumbnailProps {
+  key?: any;
+  scenario: any;
+  active: boolean;
+  onClick: () => void;
+}
+
+const ScenarioThumbnail = ({ scenario, active, onClick }: ScenarioThumbnailProps) => {
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <motion.div
+      onClick={onClick}
+      whileTap={{ scale: 0.95 }}
+      className="flex flex-col gap-2 cursor-pointer group shrink-0 w-[110px] sm:w-[130px]"
+    >
+      <div className={`relative aspect-[3/4] rounded-2xl overflow-hidden border-2 transition-all duration-300 shadow-sm ${
+        active ? 'border-[#C5A059] ring-2 ring-[#C5A059]/20' : 'border-[#E5E1D8] group-hover:border-[#C5A059]/40'
+      }`}>
+        {!hasError ? (
+          <img 
+            src={scenario.image} 
+            alt={scenario.name}
+            onError={() => setHasError(true)}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-[#FDFCF8] to-[#E5E1D8] flex flex-col items-center justify-center gap-2 p-2 text-center">
+            <span className="text-2xl">{scenario.emoji}</span>
+          </div>
+        )}
+        
+        {/* Play Icon Overlay */}
+        <div className={`absolute inset-0 flex items-center justify-center transition-colors duration-300 ${
+          active ? 'bg-black/5' : 'bg-black/10 group-hover:bg-black/20'
+        }`}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg border transition-all ${
+            active ? 'bg-[#C5A059] border-[#C5A059] text-white' : 'bg-white/90 border-white/40 text-[#1F2937]'
+          }`}>
+            {active ? <Check size={14} strokeWidth={4} /> : <Play fill="currentColor" size={12} className="ml-0.5" />}
+          </div>
+        </div>
+      </div>
+      <span className={`text-[10px] font-bold text-center leading-tight truncate px-0.5 transition-colors ${
+        active ? 'text-[#C5A059]' : 'text-[#5F6672] group-hover:text-[#1F2937]'
+      }`}>
+        {scenario.name.replace(/✨|🙏|☁️|🏖️/g, '').trim()}
+      </span>
+    </motion.div>
+  );
+};
+
 export const StepScenario = ({ onNext, selected, onBack }: any) => {
-  const [selectedId, setSelectedId] = useState<string | null>(selected);
-  const [playingId, setPlayingId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string>(selected || SCENARIOS[0].id);
+  const activeScenario = useMemo(() => SCENARIOS.find(s => s.id === activeId) || SCENARIOS[0], [activeId]);
 
   const handleAdvance = () => {
-    if (selectedId) {
-      onNext(selectedId);
-    }
+    onNext(activeId);
   };
 
   return (
-    <div className="flex flex-col gap-6 pt-2 pb-6 max-w-sm mx-auto w-full">
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6 pt-2 pb-6 max-w-md mx-auto w-full overflow-x-hidden">
+      <div className="flex flex-col gap-4 px-1">
         <button onClick={onBack} className="flex items-center gap-1.5 text-[#5F6672] text-[10px] font-bold uppercase tracking-widest hover:text-[#1F2937] transition-colors active:opacity-100 self-start">
           <ArrowLeft size={14} /> Voltar
         </button>
@@ -375,37 +345,73 @@ export const StepScenario = ({ onNext, selected, onBack }: any) => {
           <h2 className="text-[26px] sm:text-3xl font-serif leading-tight text-[#1F2937]">
             Escolha o cenário
           </h2>
-          <p className="text-xs text-[#5F6672] font-medium">Qual combina mais com esse reencontro?</p>
+          <p className="text-xs text-[#5F6672] font-medium leading-relaxed">
+            Visualize o reencontro em destaque. <br className="hidden sm:block" />
+            Toque nas opções para trocar.
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5 w-full">
-        {SCENARIOS.map((s) => (
-          <VideoCard 
-            key={s.id}
-            scenario={s}
-            selected={selectedId === s.id}
-            isPlaying={playingId === s.id}
-            onPlay={() => setPlayingId(s.id)}
-            onClick={() => {
-              setSelectedId(s.id);
-              if (playingId !== s.id) setPlayingId(s.id);
-            }}
+      {/* Main Video Feature */}
+      <div className="flex flex-col gap-6 px-1">
+        <motion.div 
+          layoutId="main-video"
+          className="relative aspect-[9/16] w-full max-w-[420px] mx-auto rounded-[40px] overflow-hidden border-2 border-[#E5E1D8] shadow-2xl bg-[#F3F4F6]"
+        >
+           <iframe
+            key={activeScenario.id}
+            src={`https://fast.wistia.net/embed/iframe/${activeScenario.videoId}?videoFoam=true&autoPlay=true&muted=true&playerColor=C5A059&controlsVisibleOnLoad=false&playbar=false&settingsControl=false&smallPlayButton=false&contextMenu=false&loop=true`}
+            title={activeScenario.name}
+            className="absolute inset-0 w-full h-full"
+            allow="autoplay; fullscreen"
+            loading="eager"
+            frameBorder="0"
           />
-        ))}
+          
+          {/* Label Overlay - Sophisticated design */}
+          <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none">
+             <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-[#C5A059] flex items-center justify-center text-white shadow-lg">
+                    <Check size={12} strokeWidth={4} />
+                  </div>
+                  <h3 className="font-bold text-lg text-white tracking-tight">
+                    {activeScenario.name}
+                  </h3>
+                </div>
+                <span className="text-[10px] font-bold text-white/70 uppercase tracking-[0.2em] ml-7">
+                  Selecionado
+                </span>
+             </div>
+          </div>
+        </motion.div>
+
+        {/* Thumbnails Carousel */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[10px] font-bold text-[#C5A059] uppercase tracking-widest">Outras opções</span>
+            <span className="text-[9px] font-medium text-[#5F6672] flex items-center gap-1">
+              Deslize para ver mais <ArrowLeft size={10} className="rotate-180" />
+            </span>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 px-1 no-scrollbar -mx-5 px-5 scroll-smooth">
+            {SCENARIOS.map((s) => (
+              <ScenarioThumbnail
+                key={s.id}
+                scenario={s}
+                active={activeId === s.id}
+                onClick={() => setActiveId(s.id)}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
-      {selectedId && (
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-2"
-        >
-          <Button onClick={handleAdvance} icon={ChevronRight} pulse={true}>
-            USAR ESTE CENÁRIO
-          </Button>
-        </motion.div>
-      )}
+      <div className="px-1">
+        <Button onClick={handleAdvance} icon={ChevronRight} pulse={true}>
+          USAR ESTE CENÁRIO
+        </Button>
+      </div>
     </div>
   );
 };
