@@ -158,24 +158,25 @@ const VideoCard = ({
             frameBorder="0"
           />
         ) : (
-          <div className="relative w-full h-full cursor-pointer" onClick={(e) => { e.stopPropagation(); onPlay(); }}>
+          <div className="relative w-full h-full cursor-pointer group/card" onClick={(e) => { e.stopPropagation(); onPlay(); }}>
             <img 
               src={scenario.image} 
               alt={scenario.name}
-              loading="lazy"
+              loading="eager"
               width="400"
               height="533"
-              decoding="async"
-              className="w-full h-full object-cover opacity-100 transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
             />
-            {/* Premium Play Button */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors">
+            {/* Premium Play Button Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover/card:bg-black/20 transition-colors duration-300">
               <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="w-12 h-12 bg-white/95 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl border border-white/50 text-[#1F2937]"
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl border border-white/40 text-[#1F2937] transform transition-transform duration-300"
               >
-                <Play fill="#1F2937" size={18} className="ml-1" />
+                <div className="bg-[#1F2937] rounded-full w-10 h-10 flex items-center justify-center">
+                  <Play fill="white" size={16} className="ml-1 text-white" />
+                </div>
               </motion.div>
             </div>
           </div>
