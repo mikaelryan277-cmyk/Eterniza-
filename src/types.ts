@@ -14,30 +14,30 @@ export interface QuizState {
 export const SCENARIOS = [
   {
     id: 'escadaria',
-    name: '✨ Escadaria com nuvens',
-    image: 'https://fast.wistia.net/embed/medias/312cyl09txuzd6j.jpg',
-    videoId: '312cyl09txuzd6j',
+    name: '✨ Escadaria nas nuvens',
+    image: 'https://fast.wistia.net/embed/medias/gx6y11c30j.jpg',
+    videoId: 'gx6y11c30j',
     description: 'Um encontro em direção à luz.'
   },
   {
     id: 'jesus',
     name: '🙏 Com Jesus',
-    image: 'https://fast.wistia.net/embed/medias/mdfw4ww2fia4w84.jpg',
-    videoId: 'mdfw4ww2fia4w84',
+    image: 'https://fast.wistia.net/embed/medias/kxy56tsisw.jpg',
+    videoId: 'kxy56tsisw',
     description: 'Um reencontro abençoado e divino.'
   },
   {
     id: 'nuvens',
     name: '☁️ Nas nuvens',
-    image: 'https://fast.wistia.net/embed/medias/afa7j9ebsj8vika.jpg',
-    videoId: 'afa7j9ebsj8vika',
+    image: 'https://fast.wistia.net/embed/medias/ex2z5dafc6.jpg',
+    videoId: 'ex2z5dafc6',
     description: 'O abraço em um céu infinito.'
   },
   {
     id: 'praia',
     name: '🏖️ Na praia',
-    image: 'https://fast.wistia.net/embed/medias/6idfx5cca7lahgo.jpg',
-    videoId: '6idfx5cca7lahgo',
+    image: 'https://fast.wistia.net/embed/medias/10trcist3m.jpg',
+    videoId: '10trcist3m',
     description: 'A paz do mar e do reencontro.'
   }
 ];

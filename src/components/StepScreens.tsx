@@ -150,7 +150,7 @@ const VideoCard = ({
       <div className="relative aspect-[3/4] w-full bg-[#F3F4F6] overflow-hidden">
         {isPlaying ? (
           <iframe
-            src={`https://fast.wistia.net/embed/iframe/${scenario.videoId}?videoFoam=true&autoPlay=true&muted=true&playerColor=C5A059`}
+            src={`https://fast.wistia.net/embed/iframe/${scenario.videoId}?videoFoam=true&autoPlay=true&muted=true&playerColor=C5A059&controlsVisibleOnLoad=false&playbar=false&settingsControl=false&smallPlayButton=false&contextMenu=false`}
             title={scenario.name}
             className="absolute inset-0 w-full h-full"
             allow="autoplay; fullscreen"
