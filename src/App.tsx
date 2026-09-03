@@ -44,10 +44,10 @@ export default function App() {
       // Prefetch common scenario thumbnails after first fold is stable
       setTimeout(() => {
         prefetchImages([
-          'https://fast.wistia.net/embed/medias/gx6y11c30j.jpg',
-          'https://fast.wistia.net/embed/medias/kxy56tsisw.jpg',
-          'https://fast.wistia.net/embed/medias/ex2z5dafc6.jpg',
-          'https://fast.wistia.net/embed/medias/10trcist3m.jpg'
+          'https://fast.wistia.net/embed/medias/gx6y11c30j.jpg?image_resize=600',
+          'https://fast.wistia.net/embed/medias/kxy56tsisw.jpg?image_resize=600',
+          'https://fast.wistia.net/embed/medias/ex2z5dafc6.jpg?image_resize=600',
+          'https://fast.wistia.net/embed/medias/10trcist3m.jpg?image_resize=600'
         ]);
       }, 2000);
     } else if (state.step === 4 || state.step === 5) {

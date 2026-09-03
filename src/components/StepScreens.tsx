@@ -141,9 +141,9 @@ const VideoCard = ({
     <motion.div 
       onClick={onClick}
       whileTap={{ scale: 0.97 }}
-      className={`relative rounded-[20px] overflow-hidden border-2 transition-all duration-300 flex flex-col group ${
+      className={`relative rounded-[24px] overflow-hidden border-2 transition-all duration-300 flex flex-col group ${
         selected 
-          ? 'border-[#C5A059] bg-[#C5A059]/5 shadow-md ring-2 ring-[#C5A059]/20' 
+          ? 'border-[#C5A059] bg-[#C5A059]/5 shadow-lg ring-2 ring-[#C5A059]/20' 
           : 'border-[#E5E1D8] bg-white hover:border-[#C5A059]/40'
       }`}
     >
@@ -158,7 +158,7 @@ const VideoCard = ({
             frameBorder="0"
           />
         ) : (
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full cursor-pointer" onClick={(e) => { e.stopPropagation(); onPlay(); }}>
             <img 
               src={scenario.image} 
               alt={scenario.name}
@@ -166,34 +166,35 @@ const VideoCard = ({
               width="400"
               height="533"
               decoding="async"
-              className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-full object-cover opacity-100 transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-              <motion.button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPlay();
-                }}
+            {/* Premium Play Button */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors">
+              <motion.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 text-white shadow-xl"
+                className="w-12 h-12 bg-white/95 backdrop-blur-md rounded-full flex items-center justify-center shadow-2xl border border-white/50 text-[#1F2937]"
               >
-                <Play fill="white" size={16} className="ml-0.5" />
-              </motion.button>
+                <Play fill="#1F2937" size={18} className="ml-1" />
+              </motion.div>
             </div>
           </div>
         )}
         
-        {/* Scenario name overlay for 2x2 grid style */}
-        <div className="absolute bottom-0 left-0 w-full p-2.5 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none">
+        {/* Scenario name overlay with sophisticated gradient */}
+        <div className="absolute bottom-0 left-0 w-full p-3.5 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none">
           <div className="flex flex-col gap-0.5">
-            <h3 className="font-bold text-[12px] tracking-tight text-white leading-tight">
+            <h3 className="font-bold text-[13px] tracking-tight text-white leading-tight">
               {scenario.name}
             </h3>
             {selected && (
-              <span className="text-[8px] font-extrabold text-[#C5A059] uppercase tracking-wider flex items-center gap-1">
-                 <Check size={8} strokeWidth={4} /> SELECIONADO
-              </span>
+              <motion.span 
+                initial={{ opacity: 0, x: -5 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-[9px] font-extrabold text-[#C5A059] uppercase tracking-wider flex items-center gap-1"
+              >
+                 <Check size={9} strokeWidth={4} /> SELECIONADO
+              </motion.span>
             )}
           </div>
         </div>
